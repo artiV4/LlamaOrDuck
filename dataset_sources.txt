@@ -1,0 +1,2 @@
+https://images.cv/dataset/duck-image-classification-dataset
+https://images.cv/dataset/llama-image-classification-dataset

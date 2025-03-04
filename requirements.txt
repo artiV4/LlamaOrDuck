@@ -1,0 +1,10 @@
+numpy==1.26.4
+matplotlib
+seaborn
+pandas==2.2.2
+tqdm
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+torchsummary
+torchmetrics
+pytorch-ignite
+lightning
