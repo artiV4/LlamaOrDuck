@@ -11,3 +11,4 @@ torchmetrics
 pytorch-ignite
 lightning
 notebook
+pygame
