@@ -68,7 +68,7 @@ def get_average_time_color(average_time):
     return red, green, 0
 
 def load_image_paths(base_path):
-    duck_path = os.path.join(base_path, "duck")
+    duck_path = os.path.join(base_path, "animal duck")
     llama_path = os.path.join(base_path, "llama")
 
     # Get image file names
@@ -132,122 +132,127 @@ clock = pygame.time.Clock()
 dataset_path = 'dataset/data/test'
 image_paths = load_image_paths(dataset_path)
 
-# Menu loop
-running = True
-while running:
-    draw_menu()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.VIDEORESIZE:
-            WIDTH, HEIGHT = event.w, event.h
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
-                selected_index = (selected_index + 1) % len(options)
-            elif event.key == pygame.K_UP:
-                selected_index = (selected_index - 1) % len(options)
-            elif event.key == pygame.K_RETURN:
-                selected_option = options[selected_index]
-                running = False  # Exit menu and start game
 
-# Load and play music
-pygame.mixer.music.load("assets/song.mp3")
-pygame.mixer.music.play(-1, 0.0)
+while True:
+    # Menu loop
+    running = True
+    while running:
+        draw_menu()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.VIDEORESIZE:
+                WIDTH, HEIGHT = event.w, event.h
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    selected_index = (selected_index + 1) % len(options)
+                elif event.key == pygame.K_UP:
+                    selected_index = (selected_index - 1) % len(options)
+                elif event.key == pygame.K_RETURN:
+                    selected_option = options[selected_index]
+                    running = False  # Exit menu and start game
 
-# Timing variables
-image_timer = pygame.time.get_ticks()
+    # Load and play music
+    pygame.mixer.music.load("assets/song.mp3")
+    pygame.mixer.music.play(-1, 0.0)
 
-# Image choice variables
-llama_or_duck = random.choice([LLAMA,DUCK])    # Llama is 0, Duck is 1.
-current_image = random.choice(image_paths[llama_or_duck])
+    # Timing variables
+    image_timer = pygame.time.get_ticks()
 
-# Statistic tracking variables
-statistics = []
-user_choice = -1
-elapsed_since_image = 0
+    # Image choice variables
+    llama_or_duck = random.choice([LLAMA,DUCK])    # Llama is 0, Duck is 1.
+    current_image = random.choice(image_paths[llama_or_duck])
 
-# Main game loop
-running = True
-start_time = pygame.time.get_ticks()
-while running:
-    elapsed_time = (pygame.time.get_ticks() - start_time) / 1000  # Convert to seconds
-    remaining_time = max(0, selected_option - int(elapsed_time))
-    elapsed_since_image = min(TIME_TO_GUESS, (pygame.time.get_ticks() - image_timer) / 1000)  # Time passed since image change
-    if elapsed_time >= selected_option:
-        running = False  # Exit game loop and move to another menu
+    # Statistic tracking variables
+    statistics = []
+    user_choice = -1
+    elapsed_since_image = 0
 
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.VIDEORESIZE:
-            WIDTH, HEIGHT = event.w, event.h
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                user_choice = LLAMA
-                image_timer = pygame.time.get_ticks() - (TIME_TO_GUESS * 1000)
-            elif event.key == pygame.K_RIGHT:
-                user_choice = DUCK
-                image_timer = pygame.time.get_ticks() - (TIME_TO_GUESS * 1000)
+    # Main game loop
+    running = True
+    start_time = pygame.time.get_ticks()
+    while running:
+        elapsed_time = (pygame.time.get_ticks() - start_time) / 1000  # Convert to seconds
+        remaining_time = max(0, selected_option - int(elapsed_time))
+        elapsed_since_image = min(TIME_TO_GUESS, (pygame.time.get_ticks() - image_timer) / 1000)  # Time passed since image change
+        if elapsed_time >= selected_option:
+            running = False  # Exit game loop and move to another menu
 
-    # Fill the screen
-    screen.fill(BLUE_GRAY)
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.VIDEORESIZE:
+                WIDTH, HEIGHT = event.w, event.h
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    user_choice = LLAMA
+                    image_timer = pygame.time.get_ticks() - (TIME_TO_GUESS * 1000)
+                elif event.key == pygame.K_RIGHT:
+                    user_choice = DUCK
+                    image_timer = pygame.time.get_ticks() - (TIME_TO_GUESS * 1000)
 
-    if pygame.time.get_ticks() - image_timer >= (TIME_TO_GUESS * 1000): # If the current image has been up for TIME_TO_GUESS seconds
-        statistics.append([llama_or_duck, user_choice, elapsed_since_image])
-        user_choice = -1
-        llama_or_duck = random.choice([LLAMA, DUCK])  # Llama is 1, Duck is 0.
-        current_image = random.choice(image_paths[llama_or_duck])
-        image_timer = pygame.time.get_ticks()
+        # Fill the screen
+        screen.fill(BLUE_GRAY)
 
-    if current_image:
-        img = pygame.image.load(current_image)
-        img = pygame.transform.scale(img, (WIDTH, HEIGHT))  # Scale image to fit screen
-        screen.blit(img, (0, 0))
+        if pygame.time.get_ticks() - image_timer >= (TIME_TO_GUESS * 1000): # If the current image has been up for TIME_TO_GUESS seconds
+            statistics.append([llama_or_duck, user_choice, elapsed_since_image])
+            user_choice = -1
+            llama_or_duck = random.choice([LLAMA, DUCK])  # Llama is 1, Duck is 0.
+            current_image = random.choice(image_paths[llama_or_duck])
+            image_timer = pygame.time.get_ticks()
 
-    # Draw the shadow first
-    shadow_offset = 2  # You can adjust the offset for shadow appearance
-    shadow_text = font.render(f"{remaining_time:03}", True, BLUE_GRAY)
-    screen.blit(shadow_text, (WIDTH - 80 + shadow_offset, 20 + shadow_offset))  # Offset shadow
+        if current_image:
+            img = pygame.image.load(current_image)
+            img = pygame.transform.scale(img, (WIDTH, HEIGHT))  # Scale image to fit screen
+            screen.blit(img, (0, 0))
 
-    # Draw the timer text on top
-    timer_text = font.render(f"{remaining_time:03}", True, WHITE)
-    screen.blit(timer_text, (WIDTH - 80, 20))  # Display in top right
+        # Draw the shadow first
+        shadow_offset = 2  # You can adjust the offset for shadow appearance
+        shadow_text = font.render(f"{remaining_time:03}", True, BLUE_GRAY)
+        screen.blit(shadow_text, (WIDTH - 80 + shadow_offset, 20 + shadow_offset))  # Offset shadow
 
-    # Calculate the progress bar shrinking effect
-    progress_bar_color = get_progress_bar_color(TIME_TO_GUESS - elapsed_since_image, TIME_TO_GUESS)
+        # Draw the timer text on top
+        timer_text = font.render(f"{remaining_time:03}", True, WHITE)
+        screen.blit(timer_text, (WIDTH - 80, 20))  # Display in top right
 
-    # Calculate the shrinking parts of the progress bar
-    left_width = int((WIDTH / 2) * elapsed_since_image)  # Left side shrinking width
-    right_width = int((WIDTH / 2) * elapsed_since_image)  # Right side shrinking width
+        # Calculate the progress bar shrinking effect
+        progress_bar_color = get_progress_bar_color(TIME_TO_GUESS - elapsed_since_image, TIME_TO_GUESS)
 
-    # Draw the progress bar
-    pygame.draw.rect(screen, progress_bar_color, (left_width, HEIGHT - 10, WIDTH - left_width - right_width, 10))  # Middle part of bar
+        # Calculate the shrinking parts of the progress bar
+        left_width = int((WIDTH / 2) * elapsed_since_image)  # Left side shrinking width
+        right_width = int((WIDTH / 2) * elapsed_since_image)  # Right side shrinking width
 
-    # Update the display
-    pygame.display.flip()
+        # Draw the progress bar
+        pygame.draw.rect(screen, progress_bar_color, (left_width, HEIGHT - 10, WIDTH - left_width - right_width, 10))  # Middle part of bar
 
-    # Frame rate (60 FPS)
-    clock.tick(60)
+        # Update the display
+        pygame.display.flip()
 
-pygame.mixer.music.stop()  # Stop music
+        # Frame rate (60 FPS)
+        clock.tick(60)
 
-# Quit Pygame
-game_over_text = font.render("Game Over.", True, RED)
-statistics_label_text = font.render("Statistics:", True, WHITE)
-statistics_text = font.render("", True, WHITE)
+    pygame.mixer.music.stop()  # Stop music
 
-draw_statistics(statistics)
-save_statistics_to_csv(statistics)
+    # Quit Pygame
+    game_over_text = font.render("Game Over.", True, RED)
+    statistics_label_text = font.render("Statistics:", True, WHITE)
+    statistics_text = font.render("", True, WHITE)
 
-# Menu loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-pygame.quit()
-sys.exit()
+    draw_statistics(statistics)
+    save_statistics_to_csv(statistics)
+
+    # Menu loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    running = False
+        if not running:
+            break
