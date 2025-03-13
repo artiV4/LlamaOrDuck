@@ -1,14 +1,9 @@
 numpy==1.26.4
 matplotlib
-seaborn
-pandas==2.2.2
 tqdm
 torch --index-url https://download.pytorch.org/whl/cu126
 torchvision
 torchaudio
 torchsummary
 torchmetrics
-pytorch-ignite
-lightning
-notebook
 pygame
