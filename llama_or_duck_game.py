@@ -30,6 +30,9 @@ selected_index = 0
 selected_option = 0
 
 def save_statistics_to_csv(statistics):
+    if not os.path.exists("data/"):
+        os.mkdir("data/")
+
     filename = f"data/{selected_option}s_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
     with open(filename, mode="w", newline="") as file:
         writer = csv.writer(file)
@@ -236,7 +239,6 @@ while True:
 
     pygame.mixer.music.stop()  # Stop music
 
-    # Quit Pygame
     game_over_text = font.render("Game Over.", True, RED)
     statistics_label_text = font.render("Statistics:", True, WHITE)
     statistics_text = font.render("", True, WHITE)
