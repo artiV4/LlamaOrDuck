@@ -7,6 +7,7 @@ import torch
 import torchvision as tv
 import pygame
 from PIL import Image
+import models
 
 IMG_SIZE = (224,224)
 LLAMA = 1
@@ -14,13 +15,9 @@ DUCK = 0
 TIME_TO_GUESS = 1.0
 options = [15, 30, 60, 120]
 
+for_time = False #CHANGE THIS
 allowed_time = options[0] #CHANGE THIS WHEN RUNNING
-model_name = "densenet121_noGaussBlur" #CHANGE THIS WHEN RUNNING
-densenet121 = tv.models.densenet121(pretrained=False)
-num_ftrs = densenet121.classifier.in_features
-densenet121.classifier = torch.nn.Linear(num_ftrs, 2)
-
-base_model =densenet121 #CHANGE THIS
+model_name, base_model = models.get_basicCNN() #CHANGE THIS
 
 
 def load_image_paths(base_path):
@@ -73,24 +70,11 @@ def loadModel(file, model):
 train_dataset_path = 'dataset/data/train'
 test_dataset_path = 'dataset/data/test'
 
-def load_image_paths(base_path):
-    duck_path = os.path.join(base_path, "animal duck")
-    llama_path = os.path.join(base_path, "llama")
-
-    # Get image file names
-    duck_images = [os.path.join(duck_path, f) for f in os.listdir(duck_path) if f.endswith(('.jpg', '.png'))]
-    llama_images = [os.path.join(llama_path, f) for f in os.listdir(llama_path) if f.endswith(('.jpg', '.png'))]
-
-    # Shuffle images
-    random.shuffle(duck_images)
-    random.shuffle(llama_images)
-    return duck_images, llama_images
-
 def save_statistics_to_csv(statistics):
     if not os.path.exists("data/"):
         os.mkdir("data/")
-
-    filename = f"data/{model_name}_{allowed_time}s_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
+    filename_mod = allowed_time+"s" if for_time else "all"
+    filename = f"data/{model_name}_{filename_mod}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
     with open(filename, mode="w", newline="") as file:
         writer = csv.writer(file)
 
@@ -143,34 +127,55 @@ model = loadModel(f"{model_name}.pt", base_model)
 statistics = []
 pygame.init()
 
+
 # Main game loop
 running = True
 start_time = pygame.time.get_ticks()
-print("starting timed execution\n")
-while running:
-    elapsed_time = (pygame.time.get_ticks() - start_time) / 1000  # Convert to seconds
-    print(f"\r{elapsed_time}\t/\t{allowed_time} sec", end='')
-    if elapsed_time >= allowed_time:
-        running = False
+if(for_time):
+    print("starting timed execution\n")
+    while running:
+        elapsed_time = (pygame.time.get_ticks() - start_time) / 1000  # Convert to seconds
+        print(f"\r{elapsed_time}\t/\t{allowed_time} sec", end='')
+        if elapsed_time >= allowed_time:
+            running = False
 
-    # Image choice variables
-    llama_or_duck = random.choice([LLAMA,DUCK])    # Llama is 0, Duck is 1.
-    current_image = random.choice(image_paths[llama_or_duck])
+        # Image choice variables
+        llama_or_duck = random.choice([LLAMA,DUCK])    # Llama is 0, Duck is 1.
+        current_image = random.choice(image_paths[llama_or_duck])
 
-    pred_start_time = pygame.time.get_ticks()
-    image = Image.open(current_image)
-    # image = np.array(Image.Image.load(current_image))
-    # image = torch.Tensor(image).to(device)
-    image = test_transforms_densenet(image).unsqueeze(0)
-    image = image.to(device)
+        pred_start_time = pygame.time.get_ticks()
+        image = Image.open(current_image)
+        # image = np.array(Image.Image.load(current_image))
+        # image = torch.Tensor(image).to(device)
+        image = test_transforms_densenet(image).unsqueeze(0)
+        image = image.to(device)
 
-    # Predict classification
-    with torch.no_grad():
-        output = model(image)
-    _, pred = torch.max(output, 1)
-    pred_end_time = pygame.time.get_ticks()
-    pred_elapsed_time = (pred_end_time-pred_start_time)/1000
-    # if(pred_elapsed_time>(TIME_TO_GUESS * 1000)): pred=-1
-    statistics.append([llama_or_duck, pred, pred_elapsed_time])
+        # Predict classification
+        with torch.no_grad():
+            output = model(image)
+        _, pred = torch.max(output, 1)
+        pred_end_time = pygame.time.get_ticks()
+        pred_elapsed_time = (pred_end_time-pred_start_time)/1000
+        # if(pred_elapsed_time>(TIME_TO_GUESS * 1000)): pred=-1
+        statistics.append([llama_or_duck, pred, pred_elapsed_time])
+else:
+    print("running on all images")
+    all_image_paths = image_paths[LLAMA]+image_paths[DUCK]
+    for llama_or_duck in [LLAMA, DUCK]:
+        current_path = image_paths[llama_or_duck]
+        for current_image in current_path:
+            pred_start_time = pygame.time.get_ticks()
+            image = Image.open(current_image)
+            image = test_transforms_densenet(image).unsqueeze(0)
+            image = image.to(device)
+
+            # Predict classification
+            with torch.no_grad():
+                output = model(image)
+            _, pred = torch.max(output, 1)
+            pred_end_time = pygame.time.get_ticks()
+            pred_elapsed_time = (pred_end_time-pred_start_time)/1000
+            # if(pred_elapsed_time>(TIME_TO_GUESS * 1000)): pred=-1
+            statistics.append([llama_or_duck, pred, pred_elapsed_time])          
 print("\nsaving statistics to file")
 save_statistics_to_csv(statistics)
