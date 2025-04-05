@@ -1,3 +1,5 @@
 dataset/
 *.zip
 venv/
+unused models/
+__pycache__

@@ -15,9 +15,9 @@ DUCK = 0
 TIME_TO_GUESS = 1.0
 options = [15, 30, 60, 120]
 
-for_time = False #CHANGE THIS
+for_time = False #CHANGE THIS - true=run for allowed_time seconds, false=run for all test data once
 allowed_time = options[0] #CHANGE THIS WHEN RUNNING
-model_name, base_model = models.get_basicCNN() #CHANGE THIS
+model_name, base_model = models.get_AlexNet() #CHANGE THIS
 
 
 def load_image_paths(base_path):
@@ -109,15 +109,16 @@ def get_mean_and_std(loader):
     return mean, std
 
 # don't need to normalize to training mean, std for densenet
-# mean, std = get_mean_and_std(train_loader)
-# mean = mean[0]
-# std = std[0]
+mean, std = get_mean_and_std(train_loader)
+mean = mean[0]
+std = std[0]
 
 test_transforms_densenet = tv.transforms.Compose([
     tv.transforms.Resize(IMG_SIZE),
     tv.transforms.ToTensor(),
-    tv.transforms.Normalize([0.485, 0.456, 0.406],
-                             [0.229, 0.224, 0.225])
+    # tv.transforms.Normalize([0.485, 0.456, 0.406],
+    #                          [0.229, 0.224, 0.225])
+    tv.transforms.Normalize(mean, std)
 ])
 
 

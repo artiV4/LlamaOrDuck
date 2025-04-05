@@ -56,7 +56,7 @@ class RGB_CNN1(torch.nn.Module):
     
 
 def get_basicCNN():
-    return "BasicCNN", RGB_CNN1()
+    return "BasicCNN_77", RGB_CNN1()
 
 
 class AlexNet(torch.nn.Module):
