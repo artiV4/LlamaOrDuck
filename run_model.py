@@ -17,7 +17,7 @@ options = [15, 30, 60, 120]
 
 for_time = False #CHANGE THIS - true=run for allowed_time seconds, false=run for all test data once
 allowed_time = options[0] #CHANGE THIS WHEN RUNNING
-model_name, base_model = models.get_AlexNet() #CHANGE THIS
+model_name, base_model = models.get_densenet121() #CHANGE THIS
 
 
 def load_image_paths(base_path):
@@ -39,26 +39,25 @@ image_paths = load_image_paths(dataset_path)
 # Ensure CUDA working
 device = None
 device_str = None
-if torch.cuda.is_available():
-    print("CUDA working \U0001F911")
-    device_str = 'cuda'
-    if('4060' in torch.cuda.get_device_name(0)):
-        emoji = '\U0001F60D' 
-    elif('GTX' in torch.cuda.get_device_name(0)):
-           emoji = '\U0001F642'
-    elif('TPU' in torch.cuda.get_device_name(0)):
-           emoji = '\U0001F47D'
-    else: emoji = '\U0001F601'
-    print(f"This user has a {torch.cuda.get_device_name(0)} {emoji}") # flex your GPUs here
-else:
-    print("CUDA not working - running on CPU \U0001F480")
-    device_str = 'cpu'
+# if torch.cuda.is_available():
+#     print("CUDA working \U0001F911")
+#     device_str = 'cuda'
+#     if('4060' in torch.cuda.get_device_name(0)):
+#         emoji = '\U0001F60D' 
+#     elif('GTX' in torch.cuda.get_device_name(0)):
+#            emoji = '\U0001F642'
+#     elif('TPU' in torch.cuda.get_device_name(0)):
+#            emoji = '\U0001F47D'
+#     else: emoji = '\U0001F601'
+#     print(f"This user has a {torch.cuda.get_device_name(0)} {emoji}") # flex your GPUs here
+# else:
+#     print("CUDA not working - running on CPU \U0001F480")
+#     device_str = 'cpu'
+device_str = 'cpu' # - delete this line
 device = torch.device(device_str)
 
 # Load the trained model
 def loadModel(file, model):
-    #now, move the model to the appropriate device (GPU if available)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     if device_str=="cpu":
         model.load_state_dict(torch.load(file, map_location=torch.device('cpu')))
