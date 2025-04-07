@@ -7,3 +7,4 @@ torchaudio
 torchsummary
 torchmetrics
 pygame
+scikit-learn
