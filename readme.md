@@ -49,7 +49,7 @@ When working on the project, if you add more imports update requirements.txt.
 
 # The Project
 The main notebook for the project is `llama_or_duck.ipynb`, which contains the code for training,
-and evaluating the models.
+and evaluating the models. The models we trained are stored as .pt files at https://drive.google.com/drive/folders/1q3U-6G6n45MhoLH2CMm6TYns1SEnMJn5.
 # Llama or duck game
 In order to measure the performance of our machine learning models, we have
 developed a human interface for classifying llamas and ducks. This interface
