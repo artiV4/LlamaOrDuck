@@ -71,6 +71,7 @@ dataset/
         ├── animal duck/
         └── llama/
 ```
+Datasets can be found at the links in `dataset_sources.txt`
 3. Run the game using:
 ```bash
 python3 llama_or_duck_game.py
