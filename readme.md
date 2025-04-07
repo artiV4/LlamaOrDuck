@@ -57,7 +57,7 @@ will allow us to quantify the difference between human ability to classify llama
 and that of AI. The game uses the same testing dataset as the test set for evaluating the models.
 ## Running the game
 1. Ensure that all requirements are installed from requirements.txt, including `pygame`
-2. Ensure that the llamas and ducks datasets are present and in the correct directory structure:
+2. Ensure that the llamas and ducks datasets are present and in the correct directory structure (Datasets can be found at the links in `dataset_sources.txt`):
 ```
 dataset/
 └── data/
