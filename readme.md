@@ -1,3 +1,20 @@
+# Llama or Duck
+The classification of an image as a llama or a duck has appeared multiple 
+times in pop culture and media as a global meme, highlighting the need for
+accurate classification and distinction between the two. This study evaluates 
+the accuracy of computer vision models in distinguishing between llamas and 
+ducks using convolutional neural networks (CNNs). Classification performance 
+on a curated dataset is contrasted with human performance data. The models
+evaluated are a basic CNN, AlexNet, and DenseNet-121. It was found that all 
+models performed the classification faster than human performance, but not 
+always more accurately. The best performance was seen from DenseNet-121 with 
+an accuracy of 98.36% and average GPU reaction time of 0.027s compared to 
+human performance of 91.25% and average reaction speed of 0.547s. This 
+highlights the superior efficiency and accuracy of neural networks for 
+certain problems compared to human performance and suggests further exploration 
+should be done to incorporate them into daily life.
+
+This is the source code repository for our CS4442 final project at Western University.
 # Setting up the project
 For consistency and to reduce differences between devices, it would be benificial to use a venv. 
 More information found here: https://docs.python.org/3/library/venv.html
@@ -30,6 +47,9 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 When working on the project, if you add more imports update requirements.txt.
 
+# The Project
+The main notebook for the project is `llama_or_duck.ipynb`, which contains the code for training,
+and evaluating the models.
 # Llama or duck game
 In order to measure the performance of our machine learning models, we have
 developed a human interface for classifying llamas and ducks. This interface
@@ -96,3 +116,9 @@ From this data many statistics can be calculated, including but not limited to:
 2. **Accuracy**
 3. **Frequency of llama-duck mis-classification**
 4. **Frequency of duck-llama mis-classification**
+
+# Data Analysis
+Two notebooks were used for analyzing the evaluation data from the models, as well
+as the comparison of human performance to that of the models:
+1. `data_analysis.ipynb` - Generates plots and compares human performance.
+2. `Llama_and_Duck_Math.ipynb` Calculates precision, accuracy, recall and F1 score.
